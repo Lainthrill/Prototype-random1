@@ -1,10 +1,7 @@
 package com.Lainthrill.random1.logic;
 
 
-import com.Lainthrill.random1.logic.Monsters.EnergyElemental;
-import com.Lainthrill.random1.logic.Monsters.Krakken;
-import com.Lainthrill.random1.logic.Monsters.LavaMonster;
-import com.Lainthrill.random1.logic.Monsters.Treant;
+import com.Lainthrill.random1.logic.Monsters.*;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -12,9 +9,10 @@ import java.util.Scanner;
 public class Main {
     public static boolean someoneHasWon = false;
     public static boolean isRoundOne = true;
-
-    int player1 = 1;
-    int player2 = 2;
+    public static String player1;
+    public static String player2;
+    public static Monster player1Monster;
+    public static Monster player2Monster;
 
 //    public static void main(String[] args) {
 //        System.out.println(coinToss());
@@ -31,13 +29,68 @@ public class Main {
     }
 
     private static void battle(MonsterTeams monsterTeams) {
+        int turn = 0;
         while (!someoneHasWon) {
             if (isRoundOne){
-                int whoIsPlayer1 = coinToss();
-                if (whoIsPlayer1 == 1) {
+                setPlayers();
+            }
+            turn++;
+            if (turn == 1) {
+                player1Monster = monsterTeams.getPlayersList().get(chooseMonster(turn,monsterTeams));
+                player2Monster = monsterTeams.getAiList().get(chooseMonster(turn,monsterTeams));
+            }
+            if (turn % 2 == 0) {
+                System.out.println("It's Player 1's turn.");
+                if (player1.equals("Human")) {
+                    cleanScreen();
+                    System.out.println("Choose your action: \n" +
+                            "1. Attack\n" +
+                            "2. Switch Monster\n" +
+                            "3. Defend\n");
+                    cleanScreen();
+                    String input = inputString();
+                    switch (input) {
+                        case "1":
+                            player1Monster.attack(player2Monster);
+                            break;
+                        case "2":
+                            player1Monster = monsterTeams.getPlayersList().get(chooseMonster(turn,monsterTeams));
+                            break;
+                        case "3":
+                            player1Monster.defend();
+                            break;
+                    }
 
                 }
+
+            } else {
+                System.out.println("It's Player 2's turn.");
+
             }
+        }
+    }
+
+    public static int chooseMonster(int turn,MonsterTeams monsterTeams) {
+        if (turn % 2 == 0) {
+            System.out.println("Choose a monster from your team to fight.");
+            for (int i = 0; i < monsterTeams.getPlayersList().size(); i++) {
+                System.out.println( i + "" + monsterTeams.getPlayersList().get(i).getName());
+            }
+        } else {
+            Random random = new Random();
+            return random.nextInt(4) + 1;
+        }
+        return inputInt();
+    }
+
+    public static void setPlayers() {
+        int whoIsPlayer1 = coinToss();
+        if (whoIsPlayer1 == 1) {
+            player1 = "Human";
+            player2 = "AI";
+        } else {
+            player1 = "AI";
+            player2 = "Human";
         }
     }
 
@@ -52,7 +105,7 @@ public class Main {
         + "1. Easy\n"
         + "2. Normal");
         cleanScreen();
-        String difficulty = input();
+        String difficulty = inputString();
         setDifficulty(difficulty,monsterTeams);
     }
 
@@ -95,11 +148,11 @@ public class Main {
         showPlayerTeam(monsterTeams);
         String monsterName;
 
-        switch (input()) {
+        switch (inputString()) {
             case "1":
                 System.out.println("Type the name you want to give to your monster," +
                         " and press enter .If you don't want to name it, just press enter.");
-                monsterName = input();
+                monsterName = inputString();
                 if (!monsterName.equals("")) {
                     monsterTeams.getPlayersList().add(new LavaMonster(monsterName));
                 } else {
@@ -109,7 +162,7 @@ public class Main {
             case "2":
                 System.out.println("Type the name you want to give to your monster," +
                         " and press enter .If you don't want to name it, just press enter.");
-                monsterName = input();//"" esetén nem adja a base nevet,itt lekezelni 67.sor monsterName helyett Lava Monster
+                monsterName = inputString();//"" esetén nem adja a base nevet,itt lekezelni 67.sor monsterName helyett Lava Monster
                 if (!monsterName.equals("")) {
                     monsterTeams.getPlayersList().add(new Treant(monsterName));
                 } else {
@@ -119,7 +172,7 @@ public class Main {
             case "3":
                 System.out.println("Type the name you want to give to your monster," +
                         " and press enter . If you don't want to name it, just press enter.");
-                monsterName = input();
+                monsterName = inputString();
                 if (!monsterName.equals("")) {
                     monsterTeams.getPlayersList().add(new EnergyElemental(monsterName));
                 } else {
@@ -129,7 +182,7 @@ public class Main {
             case "4":
                 System.out.println("Type the name you want to give to your monster," +
                         " and press enter .If you don't want to name it, just press enter.");
-                monsterName = input();
+                monsterName = inputString();
                 if (!monsterName.equals("")) {
                     monsterTeams.getPlayersList().add(new Krakken(monsterName));
                 } else {
@@ -146,9 +199,14 @@ public class Main {
         }
     }
 
-    public static String input() {
+    public static String inputString() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
+    }
+
+    public static int inputInt() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextInt();
     }
 
 

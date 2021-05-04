@@ -3,12 +3,21 @@ package com.Lainthrill.random1.logic.Monsters;
 public class LavaMonster extends Monster {
     private String name;
     private int hp = 100;
-    private static final Types type = Types.FIRE;
-    private static final Types weakness = Types.WATER;
+    private static final Types TYPE = Types.FIRE;
+    private static final Types WEAKNESS = Types.WATER;
     private int dmg = 35;
+    private static boolean isDefending;
 
     public LavaMonster(String name) {
         this.name = name;
+    }
+
+    public boolean isIsDefending() {
+        return isDefending;
+    }
+
+    public void setIsDefending(boolean isDefending) {
+        LavaMonster.isDefending = isDefending;
     }
 
     @Override
@@ -17,13 +26,17 @@ public class LavaMonster extends Monster {
     }
 
     @Override
-    public void attack() {
-
+    public void attack(Monster playerMonster) {
+        if (playerMonster.isIsDefending()) {
+            playerMonster.setHp(playerMonster.getHp() - (getDmg() / 2));
+        } else {
+            playerMonster.setHp(playerMonster.getHp() - getDmg());
+        }
     }
 
     @Override
     public void defend() {
-
+        isDefending = true;
     }
 
     @Override
@@ -35,12 +48,12 @@ public class LavaMonster extends Monster {
         return hp;
     }
 
-    public static Types getType() {
-        return type;
+    public Types getType() {
+        return TYPE;
     }
 
-    public static Types getWeakness() {
-        return weakness;
+    public Types getWeakness() {
+        return WEAKNESS;
     }
 
     public int getDmg() {

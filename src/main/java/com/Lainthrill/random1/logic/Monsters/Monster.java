@@ -6,8 +6,17 @@ public abstract class Monster {
     public static Types type;
     public static Types weakness;
     public static int dmg;
+    public static boolean isDefending;
 
-    public abstract void attack();
+    public boolean isIsDefending() {
+        return isDefending;
+    }
+
+    public void setIsDefending(boolean isDefending) {
+        Monster.isDefending = isDefending;
+    }
+
+    public abstract void attack(Monster playerMonster);
 
     public abstract void defend();
 
@@ -21,15 +30,19 @@ public abstract class Monster {
         return hp;
     }
 
-    public static Types getType() {
+    public Types getType() {
         return type;
     }
 
-    public static Types getWeakness() {
+    public Types getWeakness() {
         return weakness;
     }
 
     public int getDmg() {
         return dmg;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 }
